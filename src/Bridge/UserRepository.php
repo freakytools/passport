@@ -30,7 +30,7 @@ class UserRepository implements UserRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function getUserEntityByUserCredentials($username, $password, $grantType, ClientEntityInterface $clientEntity)
+    public function getUserEntityByUserCredentials($username, $password, $origin, $grantType, ClientEntityInterface $clientEntity)
     {
         $provider = config('auth.guards.api.provider');
 
@@ -48,7 +48,7 @@ class UserRepository implements UserRepositoryInterface
         if (! $user ) {
             return;
         } elseif (method_exists($user, 'validateForPassportPasswordGrant')) {
-            if (! $user->validateForPassportPasswordGrant($password)) {
+            if (! $user->validateForPassportPasswordGrant($password, $origin)) {
                 return;
             }
         } elseif (! $this->hasher->check($password, $user->password)) {
